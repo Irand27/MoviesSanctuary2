@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'movie.dart';
 
 class MoviesPage extends StatelessWidget {
+  final List<Movie> listMoviesCards;
+  MoviesPage({Key key, this.listMoviesCards}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,20 +16,13 @@ class MoviesPage extends StatelessWidget {
       ),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: ListView(
+          body: ListView.builder(
+            itemCount: listMoviesCards.length,
+            itemBuilder: (context, index) {
+              return _movieCard(listMoviesCards[index].date,
+                  listMoviesCards[index].nome, listMoviesCards[index].image);
+            },
             padding: const EdgeInsets.all(8),
-            children: [
-              // Card(
-              //   child: ListTile(
-              //     leading: FlutterLogo(),
-              //     title: Text('One-line ListTile'),
-              //   ),
-              // ),
-              _movieCard('2021-03-24', 'Godzilla vs. Kong',
-                  'https://wallpaperaccess.com/full/3239722.jpg'),
-              _movieCard('2021-03-03', 'Tarzan',
-                  'https://lh3.googleusercontent.com/proxy/5TgrkCVmyoYDLL6Y_gqAi68zCmSSSX9xE5lKdqgN-quCl9RfNGGIL_QodVy1lJHYtxyDBlD_rteZXdks8a798-kuFCLp9VQvpS_jHQ'),
-            ],
           )),
     );
   }
@@ -41,7 +37,7 @@ class MoviesPage extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(image),
+                  image: NetworkImage('https://image.tmdb.org/t/p/w300/$image'),
                   fit: BoxFit.cover,
                 ),
               ),
