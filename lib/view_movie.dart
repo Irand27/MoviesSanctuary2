@@ -1,8 +1,8 @@
-import 'package:Iran_desafio/pages/movie_pages/controller_movie.dart';
+import 'package:iran_desafio/pages/favorites_page.dart';
+import 'package:iran_desafio/pages/movie_pages/controller_movie.dart';
 import 'package:flutter/material.dart';
 import 'pages/movie_pages/movie.dart';
 import 'pages/movie_pages/movies_page.dart';
-import 'pages/proflie_page.dart';
 
 class MoviesSanctuary extends StatefulWidget {
   @override
@@ -19,6 +19,8 @@ class _MoviesSanctuaryState extends State<MoviesSanctuary> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          title: Text('Movies Sanctuary'),
+          centerTitle: true,
           backgroundColor: Colors.redAccent,
           elevation: 0,
           bottom: TabBar(
@@ -34,13 +36,13 @@ class _MoviesSanctuaryState extends State<MoviesSanctuary> {
               Tab(
                 child: Align(
                   alignment: Alignment.center,
-                  child: Text("MOVIES"),
+                  child: Text("RELEASES"),
                 ),
               ),
               Tab(
                 child: Align(
                   alignment: Alignment.center,
-                  child: Text("PROFILE"),
+                  child: Text("FAVORITES"),
                 ),
               ),
             ],
@@ -50,14 +52,26 @@ class _MoviesSanctuaryState extends State<MoviesSanctuary> {
           FutureBuilder<Movies>(
             future: controller.searchMovie,
             builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return CircularProgressIndicator();
+              }
               if (snapshot.hasData) {
                 return MoviesPage(
-                  listMoviesCards: snapshot.data.movie,
+                  listMoviesCards: snapshot.data!.movie,
+                );
+              } else if (snapshot.hasError) {
+                return Text(
+                  snapshot.error as String,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.red,
+                  ),
                 );
               }
+              return Container();
             },
           ),
-          ProfilePage(),
+          FavoritesPage(),
         ]),
       ),
     );

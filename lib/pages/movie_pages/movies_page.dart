@@ -1,33 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:iran_desafio/pages/movie_pages/controller_movie.dart';
+import 'package:iran_desafio/pages/movie_pages/details_movie_page.dart';
 import 'movie.dart';
 
-class MoviesPage extends StatelessWidget {
-  final List<Movie> listMoviesCards;
-  MoviesPage({Key key, this.listMoviesCards}) : super(key: key);
+class MoviesPage extends StatefulWidget {
+  final List<Movie>? listMoviesCards;
+  MoviesPage({Key? key, this.listMoviesCards}) : super(key: key);
+
+  @override
+  _MoviesPageState createState() => _MoviesPageState();
+}
+
+class _MoviesPageState extends State<MoviesPage> {
+  final viewModel = ControllerMovie();
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel.loadMovies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.redAccent, Colors.blue.shade900],
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.redAccent, Colors.blue.shade900],
+          ),
         ),
-      ),
-      child: Scaffold(
+        child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: ListView.builder(
-            itemCount: listMoviesCards.length,
-            itemBuilder: (context, index) {
-              return _movieCard(listMoviesCards[index].date,
-                  listMoviesCards[index].nome, listMoviesCards[index].image);
-            },
-            padding: const EdgeInsets.all(8),
-          )),
-    );
+          body: StreamBuilder<List<Movie>>(
+              stream: viewModel.streamList.stream,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+
+                  case ConnectionState.waiting:
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+
+                  default:
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Erro ao carregar dados!'),
+                      );
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          if (index == snapshot.data!.length - 2) {
+                            viewModel.newPage();
+                          }
+                          var movie = snapshot.data![index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailMovie(
+                                    description: movie,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: _movieCard(
+                                snapshot.data![index].date!,
+                                snapshot.data![index].nome!,
+                                snapshot.data![index].image ??
+                                    'https://thumbs.dreamstime.com/b/erro-ou-%C3%ADcone-n%C3%A3o-encontrado-no-fundo-cinzento-108178373.jpg'),
+                          );
+                        },
+                        padding: const EdgeInsets.all(8),
+                      );
+                    }
+                }
+              }),
+        ));
   }
 
-  Padding _movieCard(String data, String movieName, String image) {
+  Widget _movieCard(String data, String movieName, String? image) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
       child: Container(

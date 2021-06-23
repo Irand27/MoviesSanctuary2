@@ -83,15 +83,10 @@ class ProfilePage extends StatelessWidget {
             ),
             Container(
               width: 300,
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   _launchURL();
                 },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(80),
-                ),
-                elevation: 0,
-                padding: EdgeInsets.all(0),
                 child: Ink(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

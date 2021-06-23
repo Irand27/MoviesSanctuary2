@@ -1,12 +1,12 @@
-import 'package:Iran_desafio/API.dart';
+import 'package:iran_desafio/API.dart';
 import 'movie.dart';
 
 class ModelMovies {
-  Future<Movies> _listMovies;
+  Future<Movies>? listMovies;
 
-  Future<Movies> get listMovies => _listMovies;
+  Future<Movies>? get list_Movies => listMovies;
 
   fetchMovies() {
-    _listMovies = API().fetchMovies();
+    listMovies = API().fetchMovies();
   }
 }

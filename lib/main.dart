@@ -1,4 +1,4 @@
-import 'package:Iran_desafio/view_movie.dart';
+import 'package:iran_desafio/view_movie.dart';
 import 'package:flutter/material.dart';
 
 void main() {
